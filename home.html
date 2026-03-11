@@ -34,11 +34,11 @@
                     <div class="flex flex-col sm:flex-row gap-3 w-full md:w-auto">
                         <div
                             class="input input-bordered border rounded-lg px-4 py-2 w-full sm:w-64 focus:outline-none focus:ring-2 focus:ring-blue-500">
-                            <i class="fa-brands fa-sistrix"></i>
                             <input id="search" type="text" placeholder="Search..." />
                         </div>
-                        <button class="btn bg-[#4A00FF] text-white"><i class="fa-solid fa-plus"></i> New Issue </button>
-                       
+                        <button id="searchbtn" class="btn bg-[#4A00FF] text-white"><i class="fa-brands fa-sistrix"></i>
+                            Search </button>
+
                     </div>
 
                 </div>
@@ -47,7 +47,8 @@
     </header>
 
     <section class=" navbar bg-base-100 drop-shadow-lg mb-1.5 md:sm:w-11/12 mx-auto rounded-lg">
-        <button onclick="setFilter('all')" class="filter-btn btn bg-[#4A00FF] text-white text-gray-500 px-8 mx-2">All</button>
+        <button onclick="setFilter('all')"
+            class="filter-btn btn bg-[#4A00FF] text-white text-gray-500 px-8 mx-2">All</button>
         <button onclick="setFilter('open')" class="filter-btn btn text-gray-500 px-8 mx-2">Open</button>
         <button onclick="setFilter('closed')" class="filter-btn btn text-gray-500 px-8 mx-2">Closed</button>
     </section>
@@ -85,9 +86,30 @@
         <!-- Grid Container -->
         <div id="item_card" class="max-w-7xl mx-auto grid gap-6 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
             <!-- card -->
-            
+
         </div>
     </section>
+
+
+    <!-- model    -->
+    <!-- Open the modal using ID.showModal() method -->
+
+    <!-- <button class="btn" onclick="my_modal.showModal()">open modal</button> -->
+
+
+    <dialog id="my_modal" class="modal">
+        <div class="modal-box">
+            <div id="boxData">
+                
+            </div>
+
+            <div class="modal-action">
+                <form method="dialog">
+                    <button class="btn bg-blue-800 text-white">Close</button>
+                </form>
+            </div>
+        </div>
+    </dialog>
 
 
 

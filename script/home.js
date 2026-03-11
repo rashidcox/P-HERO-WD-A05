@@ -14,6 +14,7 @@ const allData = () => {
 }
 allData()
 
+
 function allDataDisplay(a) {
     const item = idd('item_card');
     item.innerHTML = " ";
@@ -22,7 +23,7 @@ function allDataDisplay(a) {
     a.forEach(element => {
         const cardD = document.createElement('div')
         cardD.innerHTML = `
-      <div class="bg-white rounded-xl shadow border-t-4 ${element.status === 'open' ? 'border-green-500' : 'border-violet-500'}  p-5 flex flex-col justify-between">
+      <div onclick="loadDitails(${element.id})"  class="bg-white rounded-xl shadow border-t-4 ${element.status === 'open' ? 'border-green-500' : 'border-violet-500'}  p-5 flex flex-col justify-between">
 
                 <!-- Top -->
                 <div class="flex items-center justify-between mb-3">
@@ -77,13 +78,15 @@ const openData = () => {
 function openDataDisplay(o) {
     const item = idd('item_card');
     item.innerHTML = " ";
+    const issue = idd('issues_num');
+
     const result = o.filter(element => element.status === 'open');
 
+    issue.innerHTML = `${result.length} Issues`;
     result.forEach(element => {
         const cardD = document.createElement('div')
         cardD.innerHTML = `
-      <div class="bg-white rounded-xl shadow border-t-4 ${element.status === 'open' ? 'border-green-500' : 'border-violet-500'}  p-5 flex flex-col justify-between">
-
+      <div onclick="loadDitails(${element.id})"  class="bg-white rounded-xl shadow border-t-4 ${element.status === 'open' ? 'border-green-500' : 'border-violet-500'}  p-5 flex flex-col justify-between">
                 <!-- Top -->
                 <div class="flex items-center justify-between mb-3">
                     <div class="w-8 h-8 rounded-full bg-green-100 flex items-center justify-center">
@@ -96,7 +99,7 @@ function openDataDisplay(o) {
                 </div>
 
                 <!-- Title -->
-                <h3 class="font-semibold text-gray-800 text-lg leading-snug line-clamp-1">
+                <h3  class="font-semibold text-gray-800 text-lg leading-snug line-clamp-1">
                     ${element.title}
                 </h3>
 
@@ -136,12 +139,14 @@ function closeData() {
 function closeDataDisplay(c) {
     const item = idd('item_card');
     item.innerHTML = " ";
-    const result = c.filter(element => element.status === 'closed');
+    const issue = idd('issues_num');
 
+    const result = c.filter(element => element.status === 'closed');
+    issue.innerHTML = `${result.length} Issues`;
     result.forEach(element => {
         const cardD = document.createElement('div')
         cardD.innerHTML = `
-      <div class="bg-white rounded-xl shadow border-t-4 ${element.status === 'open' ? 'border-green-500' : 'border-violet-500'}  p-5 flex flex-col justify-between">
+      <div onclick="loadDitails(${element.id})" class="bg-white rounded-xl shadow border-t-4 ${element.status === 'open' ? 'border-green-500' : 'border-violet-500'}  p-5 flex flex-col justify-between">
 
                 <!-- Top -->
                 <div class="flex items-center justify-between mb-3">
@@ -188,9 +193,6 @@ function closeDataDisplay(c) {
 }
 
 
-
-
-
 function setFilter(type) {
     if (type === 'closed') { closeData() }
     if (type === 'open') { openData() }
@@ -224,4 +226,57 @@ function formatDate(dateString) {
     return `${day}/${month}/${year}`;
 }
 
+// search filter
+const searchbtn = document.getElementById('searchbtn');
+const searchInput = document.getElementById('search');
+const resultContainer = document.getElementById('item_card');
+
+searchbtn.addEventListener('click', () => {
+    const searchTerm = searchInput.value.toLowerCase();
+    const filteredItems = Array.from(resultContainer.children).filter(item => item.textContent.toLowerCase().includes(searchTerm));
+    resultContainer.innerHTML = '';
+    filteredItems.forEach(item => resultContainer.appendChild(item));
+});
+
+
+const loadDitails = async (id) => {
+    const url = `https://phi-lab-server.vercel.app/api/v1/lab/issue/${id}`;
+
+    const response = await fetch(url);
+    const data = await response.json();
+    DisplayDetails(data.data);
+}
+
+const DisplayDetails = (data) => {
+    const details = idd('boxData').innerHTML = `
+    <h3 class="font-bold text-gray-800 text-lg leading-snug line-clamp-1">${data.title}</h3>
+                <div class="my-3">
+                    <span class="bg-green-500 px-2 rounded-full text-white">Opened</span>
+                    <span> Opened by <b>${data.assignee}</b></span>
+                    <span> ${formatDate(data.updatedAt)}</span>
+                </div>
+                <div class="flex gap-2 flex-wrap mt-4">
+                    <span class="text-xs bg-red-100 text-red-600 px-2 py-1 rounded-full">
+                        <i class="fa-solid fa-bug"></i> BAG</span>
+                    </span>
+
+                    <span class="text-xs bg-yellow-100 text-yellow-600 px-2 py-1 rounded-full">
+                        <i class="fa-solid fa-life-ring"></i> HELP WANTED
+                    </span>
+                </div>
+                <p class="my-3 text-gray-600">${data.description}</p>
+
+                    <div class="grid grid-cols-2 bg-gray-200 p-4 rounded-lg">
+                        <div>
+                            <p>Assignee:</p>
+                            <h4 class="font-bold">${data.assignee}</h4>
+                        </div>
+                        <div>
+                            <p>Priority:</p>
+                            <span class="text-xs bg-red-700  text-white px-2 py-1 rounded-full">${data.priority}</span></span>
+                        </div>
+                    </div>
+    `;
+    idd('my_modal').showModal();
+}
 
